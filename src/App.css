@@ -568,6 +568,43 @@
   font-family: var(--font-mono);
 }
 
+.rename-form {
+  margin-bottom: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: var(--paper);
+  box-shadow: var(--shadow);
+}
+
+.rename-form__actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.page-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.page-toolbar .back-link {
+  margin-bottom: 0;
+}
+
+.group-detail__actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.group-detail__actions .btn {
+  width: auto;
+  padding: 0.25rem 0;
+}
+
 .group-card__name {
   font-weight: 600;
   font-size: 1rem;
@@ -767,5 +804,15 @@
 
   .receipt__body {
     padding: 1rem;
+  }
+
+  .page-toolbar {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  .group-detail__actions {
+    width: 100%;
+    justify-content: flex-end;
   }
 }

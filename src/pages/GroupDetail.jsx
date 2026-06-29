@@ -28,6 +28,9 @@ export default function GroupDetail() {
   const [search, setSearch] = useState('');
   const [expandedExpense, setExpandedExpense] = useState(null);
   const [commentText, setCommentText] = useState('');
+  const [isRenaming, setIsRenaming] = useState(false);
+  const [renameValue, setRenameValue] = useState('');
+  const [renameError, setRenameError] = useState('');
 
   const group = getGroup(state, groupId);
   if (!group) {
@@ -78,17 +81,135 @@ export default function GroupDetail() {
     setCommentText('');
   }
 
+  function startRename() {
+    setRenameValue(group.name);
+    setRenameError('');
+    setIsRenaming(true);
+  }
+
+  function cancelRename() {
+    setIsRenaming(false);
+    setRenameValue('');
+    setRenameError('');
+  }
+
+  function handleRename(e) {
+    e.preventDefault();
+    const trimmed = renameValue.trim();
+    if (!trimmed) {
+      setRenameError('Group name is required');
+      return;
+    }
+    if (trimmed === group.name) {
+      cancelRename();
+      return;
+    }
+    dispatch({
+      type: 'RENAME_GROUP',
+      payload: { groupId, name: trimmed },
+    });
+    cancelRename();
+  }
+
   const myBalance = balances[CURRENT_USER_ID] ?? 0;
 
   return (
     <div>
-      <Link to="/groups" className="back-link">
-        ← All Groups
-      </Link>
+      <div className="page-toolbar">
+        <Link to="/groups" className="back-link">
+          ← All Groups
+        </Link>
+        <div className="group-detail__actions">
+          {group.archived ? (
+            <>
+              <button
+                type="button"
+                className="btn btn--ghost btn--small"
+                onClick={() => {
+                  dispatch({ type: 'UNARCHIVE_GROUP', payload: { groupId } });
+                }}
+              >
+                Restore
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost btn--danger btn--small"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Permanently delete "${group.name}"? This cannot be undone.`
+                    )
+                  ) {
+                    dispatch({ type: 'DELETE_GROUP', payload: { groupId } });
+                    navigate('/groups');
+                  }
+                }}
+              >
+                Delete
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                type="button"
+                className="btn btn--ghost btn--small"
+                onClick={startRename}
+              >
+                Rename
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost btn--small"
+                onClick={() => {
+                  if (
+                    window.confirm(
+                      `Archive "${group.name}"? You can restore it later from the Archived tab.`
+                    )
+                  ) {
+                    dispatch({ type: 'ARCHIVE_GROUP', payload: { groupId } });
+                  }
+                }}
+              >
+                Archive
+              </button>
+            </>
+          )}
+        </div>
+      </div>
 
       {group.archived && (
         <div className="archived-banner">
           This group is archived — viewing only. Restore it from the Groups page to make changes.
+        </div>
+      )}
+
+      {!group.archived && isRenaming && (
+        <div className="rename-form">
+          <form onSubmit={handleRename}>
+            <label className="form-label" htmlFor="group-name">
+              Rename Group
+            </label>
+            <input
+              id="group-name"
+              className="form-input"
+              value={renameValue}
+              onChange={(e) => setRenameValue(e.target.value)}
+              autoFocus
+            />
+            {renameError && <p className="form-error">{renameError}</p>}
+            <div className="rename-form__actions">
+              <button type="submit" className="btn btn--primary btn--small">
+                Save
+              </button>
+              <button
+                type="button"
+                className="btn btn--ghost btn--small"
+                onClick={cancelRename}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
       )}
 
@@ -369,51 +490,6 @@ export default function GroupDetail() {
           </Link>
         </div>
       )}
-
-      <div className="page-actions">
-        {group.archived ? (
-          <>
-            <button
-              className="btn btn--primary"
-              onClick={() => {
-                dispatch({ type: 'UNARCHIVE_GROUP', payload: { groupId } });
-              }}
-            >
-              Restore Group
-            </button>
-            <button
-              className="btn btn--danger"
-              onClick={() => {
-                if (
-                  window.confirm(
-                    `Permanently delete "${group.name}"? This cannot be undone.`
-                  )
-                ) {
-                  dispatch({ type: 'DELETE_GROUP', payload: { groupId } });
-                  navigate('/groups');
-                }
-              }}
-            >
-              Delete Permanently
-            </button>
-          </>
-        ) : (
-          <button
-            className="btn btn--ghost"
-            onClick={() => {
-              if (
-                window.confirm(
-                  `Archive "${group.name}"? You can restore it later from the Archived tab.`
-                )
-              ) {
-                dispatch({ type: 'ARCHIVE_GROUP', payload: { groupId } });
-              }
-            }}
-          >
-            Archive Group
-          </button>
-        )}
-      </div>
     </div>
   );
 }

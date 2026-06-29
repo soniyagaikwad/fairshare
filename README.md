@@ -16,7 +16,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 ## Features
 
 - **Home** — Dashboard with balance summary, outstanding groups, and recent activity
-- **Groups** — List active and archived groups; archive, restore, or permanently delete
+- **Groups** — List active and archived groups; rename, archive, restore, or permanently delete
 - **Expenses** — Record expenses with equal, unequal, percentage, shares, or itemized splits
 - **Balances** — Automatic net balance calculation per member
 - **Debt Simplification** — Minimize the number of payments needed to settle up

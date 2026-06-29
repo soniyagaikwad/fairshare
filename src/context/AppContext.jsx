@@ -165,6 +165,27 @@ function appReducer(state, action) {
       };
     }
 
+    case 'RENAME_GROUP': {
+      const group = state.groups.find((g) => g.id === action.payload.groupId);
+      const oldName = group.name;
+      const newName = action.payload.name.trim();
+      const activity = {
+        id: generateId(),
+        groupId: group.id,
+        type: ACTIVITY_TYPES.GROUP_RENAMED,
+        userId: CURRENT_USER_ID,
+        message: `Group renamed from "${oldName}" to "${newName}"`,
+        timestamp: new Date().toISOString(),
+      };
+      return {
+        ...state,
+        groups: state.groups.map((g) =>
+          g.id === action.payload.groupId ? { ...g, name: newName } : g
+        ),
+        activities: [activity, ...state.activities],
+      };
+    }
+
     case 'ARCHIVE_GROUP': {
       const group = state.groups.find((g) => g.id === action.payload.groupId);
       const activity = {
