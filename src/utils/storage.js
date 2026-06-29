@@ -1,0 +1,29 @@
+const STORAGE_KEY = 'fairshare-data';
+
+const DEFAULT_STATE = {
+  user: {
+    id: 'user-you',
+    name: 'You',
+    email: 'you@fairshare.app',
+    defaultCurrency: 'USD',
+  },
+  groups: [],
+  expenses: [],
+  settlements: [],
+  activities: [],
+  comments: [],
+};
+
+export function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return DEFAULT_STATE;
+    return { ...DEFAULT_STATE, ...JSON.parse(raw) };
+  } catch {
+    return DEFAULT_STATE;
+  }
+}
+
+export function saveState(state) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
