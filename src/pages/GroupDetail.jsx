@@ -276,7 +276,7 @@ export default function GroupDetail() {
                 return (
                   <ReceiptRow
                     key={member.id}
-                    label={getMemberName(group, member.id)}
+                    label={getMemberName(group, member.id, state.user)}
                     amount={
                       <span
                         className={
@@ -306,8 +306,8 @@ export default function GroupDetail() {
                   {simplified.map((payment, i) => (
                     <div key={i} className="settlement-card">
                       <div className="settlement-card__arrow">
-                        {getMemberName(group, payment.from)} →{' '}
-                        {getMemberName(group, payment.to)}
+                        {getMemberName(group, payment.from, state.user)} →{' '}
+                        {getMemberName(group, payment.to, state.user)}
                       </div>
                       <ReceiptRow
                         label="Amount"
@@ -366,8 +366,10 @@ export default function GroupDetail() {
                               }}
                             >
                               {formatDate(expense.date)} · paid by{' '}
-                              {getMemberName(group, expense.paidBy)} · your
-                              share: {formatMoney(myShare, group.currency)}
+                              {getMemberName(group, expense.paidBy, state.user)}
+                              {expense.recurringId && ' · recurring'}
+                              {' · '}your share:{' '}
+                              {formatMoney(myShare, group.currency)}
                             </span>
                           </span>
                           <span className="receipt__amount">
@@ -402,7 +404,7 @@ export default function GroupDetail() {
                                 ([memberId, share]) => (
                                   <ReceiptRow
                                     key={memberId}
-                                    label={getMemberName(group, memberId)}
+                                    label={getMemberName(group, memberId, state.user)}
                                     amount={formatMoney(share, group.currency)}
                                   />
                                 )
@@ -498,38 +500,41 @@ export default function GroupDetail() {
                     r.interval;
                   return (
                     <div key={r.id} className="recurring-item">
-                      <ReceiptRow
-                        label={
-                          <span>
-                            {r.description}
-                            <span
-                              style={{
-                                display: 'block',
-                                fontSize: '0.65rem',
-                                color: 'var(--ink-faint)',
-                                fontFamily: 'var(--font-mono)',
-                              }}
-                            >
-                              {intervalLabel} · {r.category}
-                            </span>
+                      <div className="receipt__row recurring-item__main">
+                        <span>
+                          {r.description}
+                          <span className="recurring-item__meta">
+                            {intervalLabel} · {r.category}
                           </span>
-                        }
-                        amount={formatMoney(r.amount, group.currency)}
-                      />
-                      <button
-                        type="button"
-                        className="btn btn--ghost btn--danger btn--small"
-                        onClick={() => {
-                          if (window.confirm(`Remove recurring "${r.description}"?`)) {
-                            dispatch({
-                              type: 'DELETE_RECURRING_EXPENSE',
-                              payload: { recurringId: r.id },
-                            });
-                          }
-                        }}
-                      >
-                        Remove
-                      </button>
+                        </span>
+                        <span className="receipt__amount">
+                          {formatMoney(r.amount, group.currency)}
+                        </span>
+                      </div>
+                      {!group.archived && (
+                        <div className="recurring-item__actions">
+                          <Link
+                            to={`/groups/${groupId}/recurring/${r.id}/edit`}
+                            className="btn btn--ghost btn--small"
+                          >
+                            Edit
+                          </Link>
+                          <button
+                            type="button"
+                            className="btn btn--ghost btn--danger btn--small"
+                            onClick={() => {
+                              if (window.confirm(`Remove recurring "${r.description}"?`)) {
+                                dispatch({
+                                  type: 'DELETE_RECURRING_EXPENSE',
+                                  payload: { recurringId: r.id },
+                                });
+                              }
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
                     </div>
                   );
                 })}

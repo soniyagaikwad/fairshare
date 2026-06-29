@@ -87,7 +87,7 @@ export default function Reports() {
             reports.outstanding.map(({ group, memberId, balance }) => (
               <ReceiptRow
                 key={`${group.id}-${memberId}`}
-                label={`${getMemberName(group, memberId)} · ${group.name}`}
+                label={`${getMemberName(group, memberId, state.user)} · ${group.name}`}
                 amount={formatMoney(balance, group.currency)}
               />
             ))

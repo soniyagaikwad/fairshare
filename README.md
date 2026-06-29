@@ -19,7 +19,8 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 - **Groups** — List active and archived groups; rename, edit, archive, restore, or permanently delete
 - **Expenses** — Add, edit, and delete with equal, unequal, percentage, shares, or itemized splits
 - **Settlements** — Record payments with balance validation (can't overpay)
-- **Recurring expenses** — Weekly, monthly, yearly, or custom intervals with auto-generation
+- **Recurring expenses** — Create, edit, or remove; weekly/monthly/yearly/custom with auto-generation
+- **Profile** — Name, email, photo, default currency, notification preferences (local)
 - **Search** — Global search across groups, expenses, and members
 - **Reports** — Category and monthly spending, outstanding balances, CSV export
 - **Activity Feed** — Track expense creation, settlements, and comments

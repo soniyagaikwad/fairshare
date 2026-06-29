@@ -344,6 +344,41 @@ function appReducer(state, action) {
       };
     }
 
+    case 'EDIT_RECURRING_EXPENSE': {
+      const existing = (state.recurringExpenses ?? []).find(
+        (r) => r.id === action.payload.recurringId
+      );
+      const activity = {
+        id: generateId(),
+        groupId: existing.groupId,
+        type: ACTIVITY_TYPES.RECURRING_EDITED,
+        userId: CURRENT_USER_ID,
+        message: `Recurring expense "${action.payload.description}" updated`,
+        timestamp: new Date().toISOString(),
+      };
+      return {
+        ...state,
+        recurringExpenses: (state.recurringExpenses ?? []).map((r) =>
+          r.id === action.payload.recurringId
+            ? {
+                ...r,
+                description: action.payload.description,
+                amount: action.payload.amount,
+                category: action.payload.category,
+                paidBy: action.payload.paidBy,
+                splitType: action.payload.splitType,
+                splits: action.payload.splits,
+                participants: action.payload.participants,
+                interval: action.payload.interval,
+                intervalDays: action.payload.intervalDays,
+                startDate: action.payload.startDate,
+              }
+            : r
+        ),
+        activities: [activity, ...state.activities],
+      };
+    }
+
     case 'PROCESS_RECURRING':
       return processRecurringExpenses(state);
 
@@ -435,7 +470,25 @@ function appReducer(state, action) {
     }
 
     case 'LOAD_DEMO_DATA':
-      return createDemoState();
+      return processRecurringExpenses(createDemoState());
+
+    case 'UPDATE_USER': {
+      const user = {
+        ...state.user,
+        ...action.payload,
+        notifications: {
+          ...state.user.notifications,
+          ...action.payload.notifications,
+        },
+      };
+      const groups = state.groups.map((g) => ({
+        ...g,
+        members: g.members.map((m) =>
+          m.id === CURRENT_USER_ID ? { ...m, name: user.name } : m
+        ),
+      }));
+      return { ...state, user, groups };
+    }
 
     case 'RESET_DATA':
       return { ...DEFAULT_STATE };
@@ -481,8 +534,14 @@ export function getGroupRecurring(state, groupId) {
   return (state.recurringExpenses ?? []).filter((r) => r.groupId === groupId && r.active);
 }
 
-export function getMemberName(group, memberId) {
-  if (memberId === CURRENT_USER_ID || memberId === 'user-you') return 'You';
+export function getRecurring(state, recurringId) {
+  return (state.recurringExpenses ?? []).find((r) => r.id === recurringId && r.active);
+}
+
+export function getMemberName(group, memberId, user) {
+  if (memberId === CURRENT_USER_ID || memberId === 'user-you') {
+    return user?.name || 'You';
+  }
   const member = group.members.find((m) => m.id === memberId);
   return member?.name ?? 'Unknown';
 }

@@ -6,6 +6,12 @@ export const DEFAULT_STATE = {
     name: 'You',
     email: 'you@fairshare.app',
     defaultCurrency: 'USD',
+    profilePicture: null,
+    notifications: {
+      expenseAdded: true,
+      settlements: true,
+      comments: true,
+    },
   },
   groups: [],
   expenses: [],
@@ -23,6 +29,14 @@ export function loadState() {
     return {
       ...DEFAULT_STATE,
       ...parsed,
+      user: {
+        ...DEFAULT_STATE.user,
+        ...parsed.user,
+        notifications: {
+          ...DEFAULT_STATE.user.notifications,
+          ...parsed.user?.notifications,
+        },
+      },
       recurringExpenses: parsed.recurringExpenses ?? [],
     };
   } catch {

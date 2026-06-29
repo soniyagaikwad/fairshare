@@ -127,7 +127,7 @@ export default function EditGroup() {
                     title={m.id !== CURRENT_USER_ID ? 'Click to remove' : undefined}
                     style={{ cursor: m.id !== CURRENT_USER_ID ? 'pointer' : 'default' }}
                   >
-                    {getMemberName({ members }, m.id)}
+                    {getMemberName({ members }, m.id, state.user)}
                     {m.id !== CURRENT_USER_ID && ' ×'}
                   </span>
                 ))}

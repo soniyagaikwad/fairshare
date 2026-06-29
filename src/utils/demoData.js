@@ -317,17 +317,17 @@ export function createDemoState() {
     ],
     recurringExpenses: [
       {
-        id: 'demo-recurring-internet',
+        id: 'demo-recurring-parking',
         groupId: GROUP_APT,
-        description: 'Internet Bill',
-        amount: 65,
-        category: 'Utilities',
-        paidBy: MEMBER_ALEX,
+        description: 'Parking Fee',
+        amount: 75,
+        category: 'Transportation',
+        paidBy: CURRENT_USER_ID,
         splitType: 'equal',
         splits: {
-          [CURRENT_USER_ID]: 21.67,
-          [MEMBER_ALEX]: 21.67,
-          [MEMBER_JORDAN]: 21.66,
+          [CURRENT_USER_ID]: 25,
+          [MEMBER_ALEX]: 25,
+          [MEMBER_JORDAN]: 25,
         },
         participants: [
           { id: CURRENT_USER_ID, included: true },
@@ -336,10 +336,10 @@ export function createDemoState() {
         ],
         interval: 'monthly',
         intervalDays: null,
-        startDate: daysAgo(60).split('T')[0],
-        lastGenerated: daysAgo(32),
+        startDate: daysAgo(10).split('T')[0],
+        lastGenerated: daysAgo(10),
         active: true,
-        createdAt: daysAgo(60),
+        createdAt: daysAgo(10),
       },
     ],
   };
@@ -358,7 +358,7 @@ export const DEMO_WALKTHROUGH = [
     steps: [
       'Open Balances — see unequal utility split and debt simplification suggestions.',
       'Open Expenses — expand an expense, then Edit to fix a typo or amount.',
-      'Open Recurring — view the Internet Bill template; add your own monthly expense.',
+      'Open Recurring — view the Parking Fee template (not yet due; no expense generated).',
       'Use Edit (top right) to change currency or add/remove members.',
       'Go to Settle Up — try overpaying to see validation; use Fill for a valid amount.',
     ],
@@ -368,6 +368,7 @@ export const DEMO_WALKTHROUGH = [
     steps: [
       'Search for "rent", "Alex", or a group name from the nav.',
       'Open Reports — review category/monthly breakdown and export CSV.',
+      'Open Profile — update your name, email, and default currency.',
     ],
   },
   {

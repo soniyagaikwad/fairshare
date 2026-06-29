@@ -127,7 +127,7 @@ export default function SettleUp() {
             return (
               <div key={member.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <ReceiptRow
-                  label={getMemberName(group, member.id)}
+                  label={getMemberName(group, member.id, state.user)}
                   amount={
                     <span
                       className={
@@ -174,7 +174,7 @@ export default function SettleUp() {
               >
                 {group.members.map((m) => (
                   <option key={m.id} value={m.id}>
-                    {getMemberName(group, m.id)}
+                    {getMemberName(group, m.id, state.user)}
                   </option>
                 ))}
               </select>
@@ -195,7 +195,7 @@ export default function SettleUp() {
                   .filter((m) => m.id !== from)
                   .map((m) => (
                     <option key={m.id} value={m.id}>
-                      {getMemberName(group, m.id)}
+                      {getMemberName(group, m.id, state.user)}
                     </option>
                   ))}
               </select>

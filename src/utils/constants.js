@@ -62,6 +62,7 @@ export const ACTIVITY_TYPES = {
   GROUP_DELETED: 'group_deleted',
   MEMBER_REMOVED: 'member_removed',
   RECURRING_CREATED: 'recurring_created',
+  RECURRING_EDITED: 'recurring_edited',
   RECURRING_DELETED: 'recurring_deleted',
 };
 

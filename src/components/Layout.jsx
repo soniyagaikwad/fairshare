@@ -27,6 +27,9 @@ export default function Layout({ children }) {
           <Link to="/reports" className={isActive('/reports') ? 'active' : ''}>
             Reports
           </Link>
+          <Link to="/profile" className={isActive('/profile') ? 'active' : ''}>
+            Profile
+          </Link>
         </nav>
       </header>
       <main className="app-main">{children}</main>
