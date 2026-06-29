@@ -1,6 +1,6 @@
 # FairShare
 
-**Split fairly, settle simply.**
+**Split Fairly, Settle Simply.**
 
 FairShare helps groups record shared expenses, calculate who owes whom, and minimize repayments — so splitting the bill never has to be awkward.
 

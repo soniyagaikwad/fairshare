@@ -364,7 +364,7 @@ export default function GroupDetail() {
           >
             Add Expense
           </Link>
-          <Link to={`/groups/${groupId}/settle`} className="btn">
+          <Link to={`/groups/${groupId}/settle`} className="btn btn--secondary">
             Settle Up
           </Link>
         </div>

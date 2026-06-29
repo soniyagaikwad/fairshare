@@ -221,11 +221,6 @@
   width: 100%;
 }
 
-.btn:hover {
-  background: var(--ink);
-  color: #fff;
-}
-
 .btn--primary {
   background: var(--ink);
   color: #fff;
@@ -233,6 +228,27 @@
 
 .btn--primary:hover {
   background: var(--header);
+  color: #fff;
+}
+
+.btn--secondary {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+.btn--secondary:hover {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--header);
+  box-shadow: var(--shadow);
+}
+
+.btn:not(.btn--primary):not(.btn--ghost):not(.btn--danger):hover {
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--header);
+  box-shadow: var(--shadow);
 }
 
 .btn--ghost {

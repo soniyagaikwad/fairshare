@@ -41,7 +41,7 @@ export default function Home() {
       <div className="page-header page-header--centered">
         <h1 className="page-header__title">FairShare</h1>
         <p className="page-header__subtitle">
-          Split fairly, settle simply
+          split fairly, settle simply
         </p>
       </div>
 
@@ -49,7 +49,7 @@ export default function Home() {
         <Link to="/groups/new" className="btn btn--primary">
           New Group
         </Link>
-        <Link to="/groups" className="btn">
+        <Link to="/groups" className="btn btn--secondary">
           View All Groups
         </Link>
       </div>
