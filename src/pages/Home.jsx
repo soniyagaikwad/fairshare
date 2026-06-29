@@ -38,11 +38,20 @@ export default function Home() {
 
   return (
     <div>
-      <div className="page-header">
+      <div className="page-header page-header--centered">
         <h1 className="page-header__title">FairShare</h1>
         <p className="page-header__subtitle">
           Split fairly, settle simply
         </p>
+      </div>
+
+      <div className="page-actions page-actions--top">
+        <Link to="/groups/new" className="btn btn--primary">
+          New Group
+        </Link>
+        <Link to="/groups" className="btn">
+          View All Groups
+        </Link>
       </div>
 
       <ReceiptCard title="Balance Summary" date={new Date().toISOString()}>
@@ -153,15 +162,6 @@ export default function Home() {
             })
           )}
         </ReceiptCard>
-      </div>
-
-      <div className="page-actions">
-        <Link to="/groups/new" className="btn btn--primary">
-          New Group
-        </Link>
-        <Link to="/groups" className="btn">
-          View All Groups
-        </Link>
       </div>
     </div>
   );
