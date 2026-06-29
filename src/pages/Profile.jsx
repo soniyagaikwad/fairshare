@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { CURRENCIES } from '../utils/constants';
 
@@ -11,7 +10,6 @@ const NOTIFICATION_OPTIONS = [
 
 export default function Profile() {
   const { state, dispatch } = useApp();
-  const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const user = state.user;
 
@@ -73,7 +71,6 @@ export default function Profile() {
       },
     });
     setSaved(true);
-    setTimeout(() => navigate('/'), 800);
   }
 
   function removePhoto() {

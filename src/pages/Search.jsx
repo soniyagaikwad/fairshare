@@ -10,6 +10,7 @@ export default function Search() {
 
   const results = globalSearch(state, query);
   const hasResults =
+    results.profile ||
     results.groups.length > 0 ||
     results.expenses.length > 0 ||
     results.members.length > 0;
@@ -40,6 +41,22 @@ export default function Search() {
       ) : (
         <div className="receipt receipt--torn-top">
           <div className="receipt__body">
+            {results.profile && (
+              <section style={{ marginBottom: '1.5rem' }}>
+                <div className="receipt__section-label">You</div>
+                <Link to="/profile">
+                  <div className="search-result">
+                    <span>
+                      {results.profile.name}
+                      <span className="search-result__meta" style={{ display: 'block' }}>
+                        {results.profile.email} · Your profile
+                      </span>
+                    </span>
+                  </div>
+                </Link>
+              </section>
+            )}
+
             {results.groups.length > 0 && (
               <section style={{ marginBottom: '1.5rem' }}>
                 <div className="receipt__section-label">Groups</div>
@@ -81,11 +98,20 @@ export default function Search() {
             {results.members.length > 0 && (
               <section>
                 <div className="receipt__section-label">Members</div>
-                {results.members.map(({ item: m, group }) => (
+                {results.members.map(({ item: m, group, isYou }) => (
                   <Link key={`${group.id}-${m.id}`} to={`/groups/${group.id}`}>
                     <div className="search-result">
-                      <span>{m.name}</span>
-                      <span className="search-result__meta">{group.name}</span>
+                      <span>
+                        {m.name}
+                        {isYou && (
+                          <span className="search-result__meta" style={{ display: 'block' }}>
+                            You · {group.name}
+                          </span>
+                        )}
+                      </span>
+                      {!isYou && (
+                        <span className="search-result__meta">{group.name}</span>
+                      )}
                     </div>
                   </Link>
                 ))}
