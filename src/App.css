@@ -449,6 +449,14 @@
   margin-bottom: 0.25rem;
 }
 
+.page-header__title--brand {
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
 .page-header__subtitle {
   font-size: 0.8rem;
   color: var(--ink-muted);

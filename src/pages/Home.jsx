@@ -39,7 +39,7 @@ export default function Home() {
   return (
     <div>
       <div className="page-header page-header--centered">
-        <h1 className="page-header__title">FairShare</h1>
+        <h1 className="page-header__title page-header__title--brand">FairShare</h1>
         <p className="page-header__subtitle">
           split fairly, settle simply
         </p>
