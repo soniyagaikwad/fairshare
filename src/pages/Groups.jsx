@@ -133,13 +133,13 @@ export default function Groups() {
                     ) : (
                       <>
                         <button
-                          className="btn btn--small"
+                          className="btn btn--ghost btn--small"
                           onClick={() => handleRestore(group.id)}
                         >
                           Restore
                         </button>
                         <button
-                          className="btn btn--danger btn--small"
+                          className="btn btn--ghost btn--danger btn--small"
                           onClick={() => handleDelete(group.id, group.name)}
                         >
                           Delete

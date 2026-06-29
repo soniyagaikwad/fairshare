@@ -261,12 +261,6 @@
   color: var(--ink);
 }
 
-.btn--small {
-  padding: 0.5rem 1rem;
-  font-size: 0.65rem;
-  width: auto;
-}
-
 .btn--danger {
   border-color: var(--negative);
   color: var(--negative);
@@ -275,6 +269,25 @@
 .btn--danger:hover {
   background: var(--negative);
   color: #fff;
+}
+
+.btn--ghost.btn--danger {
+  border-color: transparent;
+  color: var(--negative);
+}
+
+.btn--ghost.btn--danger:hover {
+  background: transparent;
+  border-color: transparent;
+  color: var(--negative);
+  opacity: 0.75;
+  box-shadow: none;
+}
+
+.btn--small {
+  padding: 0.5rem 1rem;
+  font-size: 0.65rem;
+  width: auto;
 }
 
 .form-group {
@@ -521,10 +534,15 @@
 
 .group-card__actions {
   display: flex;
+  justify-content: flex-start;
   gap: 0.5rem;
-  padding: 0 1.5rem 1rem;
+  padding: 0.75rem 1.5rem 1rem;
   border-top: 1px solid var(--line);
-  padding-top: 0.75rem;
+}
+
+.group-card__actions .btn {
+  width: auto;
+  padding-left: 0;
 }
 
 .group-card__badge {
