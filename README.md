@@ -13,7 +13,8 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Features
 
-- **Groups** — Create household, trip, event, or project groups with members and a default currency
+- **Home** — Dashboard with balance summary, outstanding groups, and recent activity
+- **Groups** — List active and archived groups; archive, restore, or permanently delete
 - **Expenses** — Record expenses with equal, unequal, percentage, shares, or itemized splits
 - **Balances** — Automatic net balance calculation per member
 - **Debt Simplification** — Minimize the number of payments needed to settle up

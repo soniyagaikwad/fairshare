@@ -3,6 +3,11 @@ import { Link, useLocation } from 'react-router-dom';
 export default function Layout({ children }) {
   const location = useLocation();
 
+  function isActive(path) {
+    if (path === '/') return location.pathname === '/';
+    return location.pathname.startsWith(path);
+  }
+
   return (
     <div className="app-layout">
       <header className="app-header">
@@ -10,7 +15,10 @@ export default function Layout({ children }) {
           <span>///</span> FairShare
         </Link>
         <nav className="app-header__nav">
-          <Link to="/" className={location.pathname === '/' ? 'active' : ''}>
+          <Link to="/" className={isActive('/') && location.pathname === '/' ? 'active' : ''}>
+            Home
+          </Link>
+          <Link to="/groups" className={isActive('/groups') ? 'active' : ''}>
             Groups
           </Link>
         </nav>

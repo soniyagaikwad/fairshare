@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
 import Layout from './components/Layout';
 import Home from './pages/Home';
+import Groups from './pages/Groups';
 import CreateGroup from './pages/CreateGroup';
 import GroupDetail from './pages/GroupDetail';
 import AddExpense from './pages/AddExpense';
@@ -15,6 +16,7 @@ export default function App() {
         <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/groups" element={<Groups />} />
             <Route path="/groups/new" element={<CreateGroup />} />
             <Route path="/groups/:groupId" element={<GroupDetail />} />
             <Route path="/groups/:groupId/expenses/new" element={<AddExpense />} />

@@ -164,6 +164,69 @@ function appReducer(state, action) {
       };
     }
 
+    case 'ARCHIVE_GROUP': {
+      const group = state.groups.find((g) => g.id === action.payload.groupId);
+      const activity = {
+        id: generateId(),
+        groupId: group.id,
+        type: ACTIVITY_TYPES.GROUP_ARCHIVED,
+        userId: CURRENT_USER_ID,
+        message: `Group "${group.name}" archived`,
+        timestamp: new Date().toISOString(),
+      };
+      return {
+        ...state,
+        groups: state.groups.map((g) =>
+          g.id === action.payload.groupId
+            ? { ...g, archived: true, archivedAt: new Date().toISOString() }
+            : g
+        ),
+        activities: [activity, ...state.activities],
+      };
+    }
+
+    case 'UNARCHIVE_GROUP': {
+      const group = state.groups.find((g) => g.id === action.payload.groupId);
+      const activity = {
+        id: generateId(),
+        groupId: group.id,
+        type: ACTIVITY_TYPES.GROUP_RESTORED,
+        userId: CURRENT_USER_ID,
+        message: `Group "${group.name}" restored`,
+        timestamp: new Date().toISOString(),
+      };
+      return {
+        ...state,
+        groups: state.groups.map((g) =>
+          g.id === action.payload.groupId
+            ? { ...g, archived: false, archivedAt: null }
+            : g
+        ),
+        activities: [activity, ...state.activities],
+      };
+    }
+
+    case 'DELETE_GROUP': {
+      const groupId = action.payload.groupId;
+      const group = state.groups.find((g) => g.id === groupId);
+      const activity = {
+        id: generateId(),
+        groupId,
+        type: ACTIVITY_TYPES.GROUP_DELETED,
+        userId: CURRENT_USER_ID,
+        message: `Group "${group.name}" deleted`,
+        timestamp: new Date().toISOString(),
+      };
+      return {
+        ...state,
+        groups: state.groups.filter((g) => g.id !== groupId),
+        expenses: state.expenses.filter((e) => e.groupId !== groupId),
+        settlements: state.settlements.filter((s) => s.groupId !== groupId),
+        comments: state.comments.filter((c) => c.groupId !== groupId),
+        activities: [activity, ...state.activities.filter((a) => a.groupId !== groupId)],
+      };
+    }
+
     default:
       return state;
   }

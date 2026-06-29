@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   useApp,
   getGroup,
@@ -23,6 +23,7 @@ import ReceiptCard, {
 export default function GroupDetail() {
   const { groupId } = useParams();
   const { state, dispatch } = useApp();
+  const navigate = useNavigate();
   const [tab, setTab] = useState('balances');
   const [search, setSearch] = useState('');
   const [expandedExpense, setExpandedExpense] = useState(null);
@@ -33,7 +34,7 @@ export default function GroupDetail() {
     return (
       <div className="empty-state">
         <p>Group not found.</p>
-        <Link to="/" className="btn btn--primary">
+        <Link to="/groups" className="btn btn--primary">
           Go Home
         </Link>
       </div>
@@ -81,9 +82,15 @@ export default function GroupDetail() {
 
   return (
     <div>
-      <Link to="/" className="back-link">
+      <Link to="/groups" className="back-link">
         ← All Groups
       </Link>
+
+      {group.archived && (
+        <div className="archived-banner">
+          This group is archived — viewing only. Restore it from the Groups page to make changes.
+        </div>
+      )}
 
       <ReceiptCard
         title={group.name}
@@ -285,36 +292,40 @@ export default function GroupDetail() {
                               </div>
                             )}
 
-                            <div className="comment-form">
-                              <input
-                                placeholder="Add a comment..."
-                                value={
-                                  expandedExpense === expense.id
-                                    ? commentText
-                                    : ''
-                                }
-                                onChange={(e) => setCommentText(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    handleAddComment(expense.id);
+                            {!group.archived && (
+                              <div className="comment-form">
+                                <input
+                                  placeholder="Add a comment..."
+                                  value={
+                                    expandedExpense === expense.id
+                                      ? commentText
+                                      : ''
                                   }
-                                }}
-                              />
-                              <button
-                                className="btn btn--small"
-                                onClick={() => handleAddComment(expense.id)}
-                              >
-                                Post
-                              </button>
-                            </div>
+                                  onChange={(e) => setCommentText(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      handleAddComment(expense.id);
+                                    }
+                                  }}
+                                />
+                                <button
+                                  className="btn btn--small"
+                                  onClick={() => handleAddComment(expense.id)}
+                                >
+                                  Post
+                                </button>
+                              </div>
+                            )}
 
-                            <button
-                              className="btn btn--danger btn--small"
-                              style={{ marginTop: '0.75rem' }}
-                              onClick={() => handleDeleteExpense(expense.id)}
-                            >
-                              Delete Expense
-                            </button>
+                            {!group.archived && (
+                              <button
+                                className="btn btn--danger btn--small"
+                                style={{ marginTop: '0.75rem' }}
+                                onClick={() => handleDeleteExpense(expense.id)}
+                              >
+                                Delete Expense
+                              </button>
+                            )}
                           </div>
                         )}
                       </div>
@@ -345,16 +356,63 @@ export default function GroupDetail() {
         )}
       </ReceiptCard>
 
+      {!group.archived && (
+        <div className="page-actions">
+          <Link
+            to={`/groups/${groupId}/expenses/new`}
+            className="btn btn--primary"
+          >
+            Add Expense
+          </Link>
+          <Link to={`/groups/${groupId}/settle`} className="btn">
+            Settle Up
+          </Link>
+        </div>
+      )}
+
       <div className="page-actions">
-        <Link
-          to={`/groups/${groupId}/expenses/new`}
-          className="btn btn--primary"
-        >
-          Add Expense
-        </Link>
-        <Link to={`/groups/${groupId}/settle`} className="btn">
-          Settle Up
-        </Link>
+        {group.archived ? (
+          <>
+            <button
+              className="btn btn--primary"
+              onClick={() => {
+                dispatch({ type: 'UNARCHIVE_GROUP', payload: { groupId } });
+              }}
+            >
+              Restore Group
+            </button>
+            <button
+              className="btn btn--danger"
+              onClick={() => {
+                if (
+                  window.confirm(
+                    `Permanently delete "${group.name}"? This cannot be undone.`
+                  )
+                ) {
+                  dispatch({ type: 'DELETE_GROUP', payload: { groupId } });
+                  navigate('/groups');
+                }
+              }}
+            >
+              Delete Permanently
+            </button>
+          </>
+        ) : (
+          <button
+            className="btn btn--ghost"
+            onClick={() => {
+              if (
+                window.confirm(
+                  `Archive "${group.name}"? You can restore it later from the Archived tab.`
+                )
+              ) {
+                dispatch({ type: 'ARCHIVE_GROUP', payload: { groupId } });
+              }
+            }}
+          >
+            Archive Group
+          </button>
+        )}
       </div>
     </div>
   );

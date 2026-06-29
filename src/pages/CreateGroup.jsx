@@ -59,12 +59,12 @@ export default function CreateGroup() {
       },
     });
 
-    navigate('/');
+    navigate('/groups');
   }
 
   return (
     <div>
-      <Link to="/" className="back-link">
+      <Link to="/groups" className="back-link">
         ← Back
       </Link>
 

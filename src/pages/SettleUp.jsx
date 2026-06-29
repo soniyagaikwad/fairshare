@@ -22,8 +22,19 @@ export default function SettleUp() {
     return (
       <div className="empty-state">
         <p>Group not found.</p>
-        <Link to="/" className="btn btn--primary">
-          Go Home
+        <Link to="/groups" className="btn btn--primary">
+          Go to Groups
+        </Link>
+      </div>
+    );
+  }
+
+  if (group.archived) {
+    return (
+      <div className="empty-state">
+        <p>This group is archived. Restore it to record settlements.</p>
+        <Link to={`/groups/${groupId}`} className="btn btn--primary">
+          View Group
         </Link>
       </div>
     );

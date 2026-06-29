@@ -55,6 +55,9 @@ export const ACTIVITY_TYPES = {
   COMMENT: 'comment',
   MEMBER_JOINED: 'member_joined',
   GROUP_CREATED: 'group_created',
+  GROUP_ARCHIVED: 'group_archived',
+  GROUP_RESTORED: 'group_restored',
+  GROUP_DELETED: 'group_deleted',
 };
 
 export function getCurrencySymbol(code) {

@@ -470,16 +470,51 @@
 .group-card {
   background: var(--paper);
   box-shadow: var(--shadow);
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   transition: transform 0.15s;
-  cursor: pointer;
+  overflow: hidden;
 }
 
 .group-card:hover {
   transform: translateY(-1px);
+}
+
+.group-card__main {
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: inherit;
+}
+
+.group-card__actions {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0 1.5rem 1rem;
+  border-top: 1px solid var(--line);
+  padding-top: 0.75rem;
+}
+
+.group-card__badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.4rem;
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--line);
+  color: var(--ink-muted);
+  vertical-align: middle;
+}
+
+.archived-banner {
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  font-size: 0.8rem;
+  color: var(--ink-muted);
+  font-family: var(--font-mono);
 }
 
 .group-card__name {
