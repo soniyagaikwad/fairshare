@@ -16,6 +16,7 @@ import TestingPanel from '../components/TestingPanel';
 export default function Home() {
   const { state } = useApp();
   const activeGroups = state.groups.filter((g) => !g.archived);
+  const defaultCurrency = state.user.defaultCurrency ?? 'USD';
 
   let totalOwed = 0;
   let totalOwing = 0;
@@ -56,12 +57,17 @@ export default function Home() {
       </div>
 
       <ReceiptCard title="Balance Summary" date={new Date().toISOString()}>
+        {activeGroups.length > 0 && (
+          <p className="receipt-hint">
+            Totals shown in {defaultCurrency}. Mixed currencies are not converted.
+          </p>
+        )}
         <ReceiptSection label="Your Totals">
           <ReceiptRow
             label="You are owed"
             amount={
               <span className="receipt__amount--positive">
-                {formatMoney(totalOwed)}
+                {formatMoney(totalOwed, defaultCurrency)}
               </span>
             }
           />
@@ -69,7 +75,7 @@ export default function Home() {
             label="You owe"
             amount={
               <span className="receipt__amount--negative">
-                {formatMoney(totalOwing)}
+                {formatMoney(totalOwing, defaultCurrency)}
               </span>
             }
           />
@@ -88,7 +94,7 @@ export default function Home() {
               >
                 {totalOwed - totalOwing === 0
                   ? 'All settled'
-                  : formatMoney(totalOwed - totalOwing)}
+                  : formatMoney(totalOwed - totalOwing, defaultCurrency)}
               </span>
             }
             total
@@ -165,6 +171,7 @@ export default function Home() {
         </ReceiptCard>
       </div>
 
+      {/* Comment out TestingPanel for production */}
       <TestingPanel />
     </div>
   );

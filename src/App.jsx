@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AppProvider } from './context/AppContext';
+import { UIProvider } from './context/UIContext';
 import Layout from './components/Layout';
 import Home from './pages/Home';
 import Groups from './pages/Groups';
@@ -19,8 +20,9 @@ import './App.css';
 export default function App() {
   return (
     <AppProvider>
-      <BrowserRouter>
-        <Layout>
+      <UIProvider>
+        <BrowserRouter>
+          <Layout>
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/groups" element={<Groups />} />
@@ -36,8 +38,9 @@ export default function App() {
             <Route path="/groups/:groupId/recurring/:recurringId/edit" element={<EditRecurring />} />
             <Route path="/groups/:groupId/settle" element={<SettleUp />} />
           </Routes>
-        </Layout>
-      </BrowserRouter>
+          </Layout>
+        </BrowserRouter>
+      </UIProvider>
     </AppProvider>
   );
 }

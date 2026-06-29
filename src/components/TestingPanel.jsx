@@ -1,33 +1,39 @@
 import { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { DEMO_WALKTHROUGH } from '../utils/demoData';
+import { useUI } from '../context/UIContext';
 
 export default function TestingPanel() {
   const { state, dispatch } = useApp();
+  const { showToast, confirm } = useUI();
   const [expanded, setExpanded] = useState(false);
   const hasData = state.groups.length > 0;
 
-  function loadDemo() {
-    if (
-      hasData &&
-      !window.confirm(
-        'This will replace all current data with demo data. Continue?'
-      )
-    ) {
-      return;
+  async function loadDemo() {
+    if (hasData) {
+      const ok = await confirm({
+        title: 'Load demo data?',
+        message: 'This will replace all current data with demo data.',
+        confirmLabel: 'Load demo',
+      });
+      if (!ok) return;
     }
     dispatch({ type: 'LOAD_DEMO_DATA' });
     setExpanded(true);
+    showToast('Demo data loaded.', 'info');
   }
 
-  function clearData() {
-    if (
-      window.confirm(
-        'Clear all groups, expenses, and activity? This cannot be undone.'
-      )
-    ) {
+  async function clearData() {
+    const ok = await confirm({
+      title: 'Clear all data?',
+      message: 'Clear all groups, expenses, and activity? This cannot be undone.',
+      confirmLabel: 'Clear all',
+      danger: true,
+    });
+    if (ok) {
       dispatch({ type: 'RESET_DATA' });
       setExpanded(false);
+      showToast('All data cleared.');
     }
   }
 

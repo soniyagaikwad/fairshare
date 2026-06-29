@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { CURRENCIES } from '../utils/constants';
+import { useUI } from '../context/UIContext';
 
 const NOTIFICATION_OPTIONS = [
   { key: 'expenseAdded', label: 'Expense added' },
@@ -10,6 +11,7 @@ const NOTIFICATION_OPTIONS = [
 
 export default function Profile() {
   const { state, dispatch } = useApp();
+  const { showToast } = useUI();
   const fileInputRef = useRef(null);
   const user = state.user;
 
@@ -23,7 +25,6 @@ export default function Profile() {
     comments: user.notifications?.comments ?? true,
   });
   const [error, setError] = useState('');
-  const [saved, setSaved] = useState(false);
 
   function handlePhotoChange(e) {
     const file = e.target.files?.[0];
@@ -70,7 +71,7 @@ export default function Profile() {
         notifications,
       },
     });
-    setSaved(true);
+    showToast('Profile saved.');
   }
 
   function removePhoto() {
@@ -109,7 +110,7 @@ export default function Profile() {
                 {profilePicture && (
                   <button
                     type="button"
-                    className="btn btn--ghost btn--small"
+                    className="btn btn--small btn--danger"
                     onClick={removePhoto}
                   >
                     Remove
@@ -180,9 +181,6 @@ export default function Profile() {
             </div>
 
             {error && <p className="form-error">{error}</p>}
-            {saved && (
-              <p className="profile-saved">Profile saved.</p>
-            )}
 
             <button type="submit" className="btn btn--primary">Save Profile</button>
           </form>

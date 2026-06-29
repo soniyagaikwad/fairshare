@@ -8,6 +8,7 @@ import {
   CURRENT_USER_ID,
   generateId,
 } from '../utils/constants';
+import { useUI } from '../context/UIContext';
 
 function buildSplitDataFromExpense(expense) {
   if (!expense) return {};
@@ -32,6 +33,7 @@ function buildItemsFromExpense(expense) {
 export default function ExpenseForm({ group, groupId, expense = null }) {
   const { dispatch } = useApp();
   const navigate = useNavigate();
+  const { showToast } = useUI();
   const isEdit = Boolean(expense);
 
   const [description, setDescription] = useState(expense?.description ?? '');
@@ -133,8 +135,10 @@ export default function ExpenseForm({ group, groupId, expense = null }) {
 
     if (isEdit) {
       dispatch({ type: 'EDIT_EXPENSE', payload: { expenseId: expense.id, ...payload } });
+      showToast('Expense updated.');
     } else {
       dispatch({ type: 'ADD_EXPENSE', payload });
+      showToast('Expense added.');
     }
 
     navigate(`/groups/${groupId}`);

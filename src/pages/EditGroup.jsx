@@ -8,11 +8,13 @@ import {
   CURRENT_USER_ID,
   generateId,
 } from '../utils/constants';
+import { useUI } from '../context/UIContext';
 
 export default function EditGroup() {
   const { groupId } = useParams();
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
+  const { showToast } = useUI();
   const group = getGroup(state, groupId);
 
   const [type, setType] = useState(group?.type ?? 'generic');
@@ -74,6 +76,7 @@ export default function EditGroup() {
       type: 'EDIT_GROUP',
       payload: { groupId, type, currency, members, simplifyDebts },
     });
+    showToast('Group updated.');
     navigate(`/groups/${groupId}`);
   }
 

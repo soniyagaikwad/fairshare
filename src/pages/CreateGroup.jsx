@@ -7,10 +7,12 @@ import {
   CURRENT_USER_ID,
   generateId,
 } from '../utils/constants';
+import { useUI } from '../context/UIContext';
 
 export default function CreateGroup() {
   const { dispatch } = useApp();
   const navigate = useNavigate();
+  const { showToast } = useUI();
 
   const [name, setName] = useState('');
   const [type, setType] = useState('generic');
@@ -59,6 +61,7 @@ export default function CreateGroup() {
       },
     });
 
+    showToast('Group created.');
     navigate('/groups');
   }
 

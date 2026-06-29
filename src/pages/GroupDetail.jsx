@@ -21,11 +21,13 @@ import ReceiptCard, {
   ReceiptRow,
   ReceiptSection,
 } from '../components/ReceiptCard';
+import { useUI } from '../context/UIContext';
 
 export default function GroupDetail() {
   const { groupId } = useParams();
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
+  const { showToast, confirm } = useUI();
   const [tab, setTab] = useState('balances');
   const [search, setSearch] = useState('');
   const [expandedExpense, setExpandedExpense] = useState(null);
@@ -73,9 +75,16 @@ export default function GroupDetail() {
       )
     : expenses;
 
-  function handleDeleteExpense(expenseId) {
-    if (window.confirm('Delete this expense?')) {
+  async function handleDeleteExpense(expenseId) {
+    const ok = await confirm({
+      title: 'Delete expense?',
+      message: 'This expense will be removed from the group.',
+      confirmLabel: 'Delete',
+      danger: true,
+    });
+    if (ok) {
       dispatch({ type: 'DELETE_EXPENSE', payload: { expenseId } });
+      showToast('Expense deleted.');
     }
   }
 
@@ -115,6 +124,7 @@ export default function GroupDetail() {
       type: 'RENAME_GROUP',
       payload: { groupId, name: trimmed },
     });
+    showToast('Group renamed.');
     cancelRename();
   }
 
@@ -126,28 +136,32 @@ export default function GroupDetail() {
         <Link to="/groups" className="back-link">
           ← All Groups
         </Link>
-        <div className="group-detail__actions">
+        <div className="group-detail__actions btn-row">
           {group.archived ? (
             <>
               <button
                 type="button"
-                className="btn btn--ghost btn--small"
+                className="btn btn--small"
                 onClick={() => {
                   dispatch({ type: 'UNARCHIVE_GROUP', payload: { groupId } });
+                  showToast('Group restored.');
                 }}
               >
                 Restore
               </button>
               <button
                 type="button"
-                className="btn btn--ghost btn--danger btn--small"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      `Permanently delete "${group.name}"? This cannot be undone.`
-                    )
-                  ) {
+                className="btn btn--danger btn--small"
+                onClick={async () => {
+                  const ok = await confirm({
+                    title: 'Delete group?',
+                    message: `Permanently delete "${group.name}"? This cannot be undone.`,
+                    confirmLabel: 'Delete',
+                    danger: true,
+                  });
+                  if (ok) {
                     dispatch({ type: 'DELETE_GROUP', payload: { groupId } });
+                    showToast('Group deleted.');
                     navigate('/groups');
                   }
                 }}
@@ -159,27 +173,29 @@ export default function GroupDetail() {
             <>
               <button
                 type="button"
-                className="btn btn--ghost btn--small"
+                className="btn btn--small"
                 onClick={startRename}
               >
                 Rename
               </button>
               <Link
                 to={`/groups/${groupId}/edit`}
-                className="btn btn--ghost btn--small"
+                className="btn btn--small"
               >
                 Edit
               </Link>
               <button
                 type="button"
-                className="btn btn--ghost btn--small"
-                onClick={() => {
-                  if (
-                    window.confirm(
-                      `Archive "${group.name}"? You can restore it later from the Archived tab.`
-                    )
-                  ) {
+                className="btn btn--small"
+                onClick={async () => {
+                  const ok = await confirm({
+                    title: 'Archive group?',
+                    message: `Archive "${group.name}"? You can restore it later from the Archived tab.`,
+                    confirmLabel: 'Archive',
+                  });
+                  if (ok) {
                     dispatch({ type: 'ARCHIVE_GROUP', payload: { groupId } });
+                    showToast('Group archived.');
                   }
                 }}
               >
@@ -210,7 +226,7 @@ export default function GroupDetail() {
               autoFocus
             />
             {renameError && <p className="form-error">{renameError}</p>}
-            <div className="rename-form__actions">
+            <div className="rename-form__actions btn-row">
               <button type="submit" className="btn btn--primary btn--small">
                 Save
               </button>
@@ -454,7 +470,7 @@ export default function GroupDetail() {
                             )}
 
                             {!group.archived && (
-                              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                              <div className="btn-row btn-row--spaced">
                                 <Link
                                   to={`/groups/${groupId}/expenses/${expense.id}/edit`}
                                   className="btn btn--small"
@@ -462,7 +478,7 @@ export default function GroupDetail() {
                                   Edit
                                 </Link>
                                 <button
-                                  className="btn btn--ghost btn--danger btn--small"
+                                  className="btn btn--danger btn--small"
                                   onClick={() => handleDeleteExpense(expense.id)}
                                 >
                                   Delete
@@ -481,6 +497,9 @@ export default function GroupDetail() {
 
         {tab === 'recurring' && (
           <>
+            <p className="receipt-hint">
+              Templates on a schedule. When due, they auto-add to Expenses.
+            </p>
             {recurring.length === 0 ? (
               <div className="empty-state" style={{ padding: '2rem 0' }}>
                 <p className="empty-state__text">No recurring expenses yet.</p>
@@ -512,22 +531,29 @@ export default function GroupDetail() {
                         </span>
                       </div>
                       {!group.archived && (
-                        <div className="recurring-item__actions">
+                        <div className="recurring-item__actions btn-row">
                           <Link
                             to={`/groups/${groupId}/recurring/${r.id}/edit`}
-                            className="btn btn--ghost btn--small"
+                            className="btn btn--small"
                           >
                             Edit
                           </Link>
                           <button
                             type="button"
-                            className="btn btn--ghost btn--danger btn--small"
-                            onClick={() => {
-                              if (window.confirm(`Remove recurring "${r.description}"?`)) {
+                            className="btn btn--danger btn--small"
+                            onClick={async () => {
+                              const ok = await confirm({
+                                title: 'Remove recurring?',
+                                message: `Remove recurring "${r.description}"? Future charges will not be generated.`,
+                                confirmLabel: 'Remove',
+                                danger: true,
+                              });
+                              if (ok) {
                                 dispatch({
                                   type: 'DELETE_RECURRING_EXPENSE',
                                   payload: { recurringId: r.id },
                                 });
+                                showToast('Recurring expense removed.');
                               }
                             }}
                           >

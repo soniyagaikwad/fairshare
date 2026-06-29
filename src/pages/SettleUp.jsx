@@ -5,11 +5,13 @@ import { computeBalances } from '../utils/balances';
 import { PAYMENT_METHODS, CURRENT_USER_ID, formatMoney } from '../utils/constants';
 import { validateSettlement, getMaxSettlementAmount } from '../utils/settlement';
 import { ReceiptRow } from '../components/ReceiptCard';
+import { useUI } from '../context/UIContext';
 
 export default function SettleUp() {
   const { groupId } = useParams();
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
+  const { showToast } = useUI();
   const group = getGroup(state, groupId);
 
   const [from, setFrom] = useState(CURRENT_USER_ID);
@@ -86,6 +88,7 @@ export default function SettleUp() {
       },
     });
 
+    showToast('Settlement recorded.');
     navigate(`/groups/${groupId}`);
   }
 

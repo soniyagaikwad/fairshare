@@ -3,32 +3,44 @@ import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { computeBalances } from '../utils/balances';
 import { formatMoney, CURRENT_USER_ID } from '../utils/constants';
+import { useUI } from '../context/UIContext';
 
 export default function Groups() {
   const { state, dispatch } = useApp();
+  const { showToast, confirm } = useUI();
   const [filter, setFilter] = useState('active');
 
   const activeGroups = state.groups.filter((g) => !g.archived);
   const archivedGroups = state.groups.filter((g) => g.archived);
   const displayedGroups = filter === 'active' ? activeGroups : archivedGroups;
 
-  function handleArchive(groupId, groupName) {
-    if (window.confirm(`Archive "${groupName}"? You can restore it later from the Archived tab.`)) {
+  async function handleArchive(groupId, groupName) {
+    const ok = await confirm({
+      title: 'Archive group?',
+      message: `Archive "${groupName}"? You can restore it later from the Archived tab.`,
+      confirmLabel: 'Archive',
+    });
+    if (ok) {
       dispatch({ type: 'ARCHIVE_GROUP', payload: { groupId } });
+      showToast('Group archived.');
     }
   }
 
   function handleRestore(groupId) {
     dispatch({ type: 'UNARCHIVE_GROUP', payload: { groupId } });
+    showToast('Group restored.');
   }
 
-  function handleDelete(groupId, groupName) {
-    if (
-      window.confirm(
-        `Permanently delete "${groupName}"? This will remove all expenses, settlements, and activity. This cannot be undone.`
-      )
-    ) {
+  async function handleDelete(groupId, groupName) {
+    const ok = await confirm({
+      title: 'Delete group?',
+      message: `Permanently delete "${groupName}"? This will remove all expenses, settlements, and activity. This cannot be undone.`,
+      confirmLabel: 'Delete',
+      danger: true,
+    });
+    if (ok) {
       dispatch({ type: 'DELETE_GROUP', payload: { groupId } });
+      showToast('Group deleted.');
     }
   }
 
@@ -122,10 +134,10 @@ export default function Groups() {
                           : 'settled'}
                     </div>
                   </Link>
-                  <div className="group-card__actions">
+                  <div className="group-card__actions btn-row">
                     {filter === 'active' ? (
                       <button
-                        className="btn btn--ghost btn--small"
+                        className="btn btn--small"
                         onClick={() => handleArchive(group.id, group.name)}
                       >
                         Archive
@@ -133,13 +145,13 @@ export default function Groups() {
                     ) : (
                       <>
                         <button
-                          className="btn btn--ghost btn--small"
+                          className="btn btn--small"
                           onClick={() => handleRestore(group.id)}
                         >
                           Restore
                         </button>
                         <button
-                          className="btn btn--ghost btn--danger btn--small"
+                          className="btn btn--danger btn--small"
                           onClick={() => handleDelete(group.id, group.name)}
                         >
                           Delete

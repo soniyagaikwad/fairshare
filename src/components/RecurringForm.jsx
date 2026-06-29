@@ -4,10 +4,12 @@ import { useApp } from '../context/AppContext';
 import { calculateSplits, validateSplits } from '../utils/balances';
 import { CATEGORIES, CURRENT_USER_ID } from '../utils/constants';
 import { RECURRING_INTERVALS } from '../utils/recurring';
+import { useUI } from '../context/UIContext';
 
 export default function RecurringForm({ group, groupId, recurring = null }) {
   const { dispatch } = useApp();
   const navigate = useNavigate();
+  const { showToast } = useUI();
   const isEdit = Boolean(recurring);
 
   const [description, setDescription] = useState(recurring?.description ?? '');
@@ -64,8 +66,10 @@ export default function RecurringForm({ group, groupId, recurring = null }) {
         type: 'EDIT_RECURRING_EXPENSE',
         payload: { recurringId: recurring.id, ...payload },
       });
+      showToast('Recurring expense updated.');
     } else {
       dispatch({ type: 'ADD_RECURRING_EXPENSE', payload });
+      showToast('Recurring expense added.');
     }
 
     navigate(`/groups/${groupId}`);
