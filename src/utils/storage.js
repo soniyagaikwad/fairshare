@@ -1,6 +1,6 @@
 const STORAGE_KEY = 'fairshare-data';
 
-const DEFAULT_STATE = {
+export const DEFAULT_STATE = {
   user: {
     id: 'user-you',
     name: 'You',

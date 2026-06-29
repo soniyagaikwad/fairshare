@@ -665,6 +665,79 @@
   margin-bottom: 1.5rem;
 }
 
+.testing-panel {
+  margin-top: 2rem;
+}
+
+.testing-panel__toggle {
+  width: 100%;
+  padding: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  border: 1px dashed var(--line);
+  background: transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.testing-panel__toggle:hover {
+  color: var(--ink);
+  border-color: var(--ink-muted);
+}
+
+.testing-panel__intro {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.testing-panel__walkthrough {
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  padding-left: 1.25rem;
+  line-height: 1.6;
+}
+
+.testing-panel__walkthrough > li {
+  margin-bottom: 1rem;
+}
+
+.testing-panel__walkthrough strong {
+  color: var(--ink);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.testing-panel__walkthrough ul {
+  margin-top: 0.35rem;
+  padding-left: 1.1rem;
+}
+
+.testing-panel__walkthrough ul li {
+  margin-bottom: 0.25rem;
+}
+
+.btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.btn:disabled:hover {
+  background: transparent;
+  color: var(--ink);
+  border-color: var(--ink);
+  box-shadow: none;
+}
+
+.btn--primary:disabled:hover {
+  background: var(--ink);
+  color: #fff;
+}
+
 @media (max-width: 480px) {
   .app-main {
     padding: 1.25rem 1rem;

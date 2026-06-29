@@ -1,6 +1,7 @@
 import { createContext, useContext, useReducer, useEffect } from 'react';
-import { loadState, saveState } from '../utils/storage';
+import { loadState, saveState, DEFAULT_STATE } from '../utils/storage';
 import { generateId, ACTIVITY_TYPES, CURRENT_USER_ID } from '../utils/constants';
+import { createDemoState } from '../utils/demoData';
 
 const AppContext = createContext(null);
 
@@ -226,6 +227,12 @@ function appReducer(state, action) {
         activities: [activity, ...state.activities.filter((a) => a.groupId !== groupId)],
       };
     }
+
+    case 'LOAD_DEMO_DATA':
+      return createDemoState();
+
+    case 'RESET_DATA':
+      return { ...DEFAULT_STATE };
 
     default:
       return state;

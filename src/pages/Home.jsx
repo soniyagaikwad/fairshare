@@ -11,6 +11,7 @@ import ReceiptCard, {
   ReceiptRow,
   ReceiptSection,
 } from '../components/ReceiptCard';
+import TestingPanel from '../components/TestingPanel';
 
 export default function Home() {
   const { state } = useApp();
@@ -163,6 +164,8 @@ export default function Home() {
           )}
         </ReceiptCard>
       </div>
+
+      <TestingPanel />
     </div>
   );
 }
