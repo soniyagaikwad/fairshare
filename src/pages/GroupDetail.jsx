@@ -4,10 +4,12 @@ import {
   useApp,
   getGroup,
   getGroupExpenses,
+  getGroupRecurring,
   getMemberName,
 } from '../context/AppContext';
 import { computeBalances } from '../utils/balances';
 import { simplifyDebts } from '../utils/debtSimplification';
+import { RECURRING_INTERVALS } from '../utils/recurring';
 import {
   formatMoney,
   formatDate,
@@ -57,6 +59,11 @@ export default function GroupDetail() {
   const activities = state.activities
     .filter((a) => a.groupId === groupId)
     .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  const recurring = getGroupRecurring(state, groupId);
+
+  const tabs = group.archived
+    ? ['balances', 'expenses', 'activity']
+    : ['balances', 'expenses', 'recurring', 'activity'];
 
   const filteredExpenses = search
     ? expenses.filter(
@@ -157,6 +164,12 @@ export default function GroupDetail() {
               >
                 Rename
               </button>
+              <Link
+                to={`/groups/${groupId}/edit`}
+                className="btn btn--ghost btn--small"
+              >
+                Edit
+              </Link>
               <button
                 type="button"
                 className="btn btn--ghost btn--small"
@@ -243,7 +256,7 @@ export default function GroupDetail() {
         <ReceiptDivider />
 
         <div className="tabs">
-          {['balances', 'expenses', 'activity'].map((t) => (
+          {tabs.map((t) => (
             <button
               key={t}
               className={`tab ${tab === t ? 'tab--active' : ''}`}
@@ -439,19 +452,94 @@ export default function GroupDetail() {
                             )}
 
                             {!group.archived && (
-                              <button
-                                className="btn btn--danger btn--small"
-                                style={{ marginTop: '0.75rem' }}
-                                onClick={() => handleDeleteExpense(expense.id)}
-                              >
-                                Delete Expense
-                              </button>
+                              <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem' }}>
+                                <Link
+                                  to={`/groups/${groupId}/expenses/${expense.id}/edit`}
+                                  className="btn btn--small"
+                                >
+                                  Edit
+                                </Link>
+                                <button
+                                  className="btn btn--ghost btn--danger btn--small"
+                                  onClick={() => handleDeleteExpense(expense.id)}
+                                >
+                                  Delete
+                                </button>
+                              </div>
                             )}
                           </div>
                         )}
                       </div>
                     );
                   })}
+              </>
+            )}
+          </>
+        )}
+
+        {tab === 'recurring' && (
+          <>
+            {recurring.length === 0 ? (
+              <div className="empty-state" style={{ padding: '2rem 0' }}>
+                <p className="empty-state__text">No recurring expenses yet.</p>
+                <Link
+                  to={`/groups/${groupId}/recurring/new`}
+                  className="btn btn--primary btn--small"
+                  style={{ marginTop: '1rem' }}
+                >
+                  Add Recurring
+                </Link>
+              </div>
+            ) : (
+              <>
+                {recurring.map((r) => {
+                  const intervalLabel =
+                    RECURRING_INTERVALS.find((i) => i.value === r.interval)?.label ??
+                    r.interval;
+                  return (
+                    <div key={r.id} className="recurring-item">
+                      <ReceiptRow
+                        label={
+                          <span>
+                            {r.description}
+                            <span
+                              style={{
+                                display: 'block',
+                                fontSize: '0.65rem',
+                                color: 'var(--ink-faint)',
+                                fontFamily: 'var(--font-mono)',
+                              }}
+                            >
+                              {intervalLabel} · {r.category}
+                            </span>
+                          </span>
+                        }
+                        amount={formatMoney(r.amount, group.currency)}
+                      />
+                      <button
+                        type="button"
+                        className="btn btn--ghost btn--danger btn--small"
+                        onClick={() => {
+                          if (window.confirm(`Remove recurring "${r.description}"?`)) {
+                            dispatch({
+                              type: 'DELETE_RECURRING_EXPENSE',
+                              payload: { recurringId: r.id },
+                            });
+                          }
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  );
+                })}
+                <Link
+                  to={`/groups/${groupId}/recurring/new`}
+                  className="btn btn--secondary btn--small"
+                  style={{ marginTop: '1rem' }}
+                >
+                  Add Recurring
+                </Link>
               </>
             )}
           </>

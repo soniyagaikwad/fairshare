@@ -56,9 +56,13 @@ export const ACTIVITY_TYPES = {
   MEMBER_JOINED: 'member_joined',
   GROUP_CREATED: 'group_created',
   GROUP_RENAMED: 'group_renamed',
+  GROUP_EDITED: 'group_edited',
   GROUP_ARCHIVED: 'group_archived',
   GROUP_RESTORED: 'group_restored',
   GROUP_DELETED: 'group_deleted',
+  MEMBER_REMOVED: 'member_removed',
+  RECURRING_CREATED: 'recurring_created',
+  RECURRING_DELETED: 'recurring_deleted',
 };
 
 export function getCurrencySymbol(code) {

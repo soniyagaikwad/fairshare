@@ -16,11 +16,12 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 ## Features
 
 - **Home** — Dashboard with balance summary, outstanding groups, and recent activity
-- **Groups** — List active and archived groups; rename, archive, restore, or permanently delete
-- **Expenses** — Record expenses with equal, unequal, percentage, shares, or itemized splits
-- **Balances** — Automatic net balance calculation per member
-- **Debt Simplification** — Minimize the number of payments needed to settle up
-- **Settlements** — Record payments (cash, Venmo, bank transfer, etc.)
+- **Groups** — List active and archived groups; rename, edit, archive, restore, or permanently delete
+- **Expenses** — Add, edit, and delete with equal, unequal, percentage, shares, or itemized splits
+- **Settlements** — Record payments with balance validation (can't overpay)
+- **Recurring expenses** — Weekly, monthly, yearly, or custom intervals with auto-generation
+- **Search** — Global search across groups, expenses, and members
+- **Reports** — Category and monthly spending, outstanding balances, CSV export
 - **Activity Feed** — Track expense creation, settlements, and comments
 - **Comments** — Add notes to individual expenses
 

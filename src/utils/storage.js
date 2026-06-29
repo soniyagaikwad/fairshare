@@ -12,13 +12,19 @@ export const DEFAULT_STATE = {
   settlements: [],
   activities: [],
   comments: [],
+  recurringExpenses: [],
 };
 
 export function loadState() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return DEFAULT_STATE;
-    return { ...DEFAULT_STATE, ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return {
+      ...DEFAULT_STATE,
+      ...parsed,
+      recurringExpenses: parsed.recurringExpenses ?? [],
+    };
   } catch {
     return DEFAULT_STATE;
   }

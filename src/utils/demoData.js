@@ -315,6 +315,33 @@ export function createDemoState() {
         timestamp: daysAgo(7),
       },
     ],
+    recurringExpenses: [
+      {
+        id: 'demo-recurring-internet',
+        groupId: GROUP_APT,
+        description: 'Internet Bill',
+        amount: 65,
+        category: 'Utilities',
+        paidBy: MEMBER_ALEX,
+        splitType: 'equal',
+        splits: {
+          [CURRENT_USER_ID]: 21.67,
+          [MEMBER_ALEX]: 21.67,
+          [MEMBER_JORDAN]: 21.66,
+        },
+        participants: [
+          { id: CURRENT_USER_ID, included: true },
+          { id: MEMBER_ALEX, included: true },
+          { id: MEMBER_JORDAN, included: true },
+        ],
+        interval: 'monthly',
+        intervalDays: null,
+        startDate: daysAgo(60).split('T')[0],
+        lastGenerated: daysAgo(32),
+        active: true,
+        createdAt: daysAgo(60),
+      },
+    ],
   };
 }
 
@@ -330,9 +357,17 @@ export const DEMO_WALKTHROUGH = [
     title: 'Apartment 4B (household)',
     steps: [
       'Open Balances — see unequal utility split and debt simplification suggestions.',
-      'Open Expenses — expand "Trader Joe\'s Run" to view itemized split and Alex\'s comment.',
-      'Try Add Expense with a percentage split (e.g. 40/30/30).',
-      'Go to Settle Up — use Fill to record a payment from Alex.',
+      'Open Expenses — expand an expense, then Edit to fix a typo or amount.',
+      'Open Recurring — view the Internet Bill template; add your own monthly expense.',
+      'Use Edit (top right) to change currency or add/remove members.',
+      'Go to Settle Up — try overpaying to see validation; use Fill for a valid amount.',
+    ],
+  },
+  {
+    title: 'Search & Reports',
+    steps: [
+      'Search for "rent", "Alex", or a group name from the nav.',
+      'Open Reports — review category/monthly breakdown and export CSV.',
     ],
   },
   {

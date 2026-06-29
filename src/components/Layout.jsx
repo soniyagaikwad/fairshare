@@ -21,6 +21,12 @@ export default function Layout({ children }) {
           <Link to="/groups" className={isActive('/groups') ? 'active' : ''}>
             Groups
           </Link>
+          <Link to="/search" className={isActive('/search') ? 'active' : ''}>
+            Search
+          </Link>
+          <Link to="/reports" className={isActive('/reports') ? 'active' : ''}>
+            Reports
+          </Link>
         </nav>
       </header>
       <main className="app-main">{children}</main>

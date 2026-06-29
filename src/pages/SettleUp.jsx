@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useApp, getGroup, getMemberName } from '../context/AppContext';
 import { computeBalances } from '../utils/balances';
 import { PAYMENT_METHODS, CURRENT_USER_ID, formatMoney } from '../utils/constants';
+import { validateSettlement, getMaxSettlementAmount } from '../utils/settlement';
 import { ReceiptRow } from '../components/ReceiptCard';
 
 export default function SettleUp() {
@@ -67,9 +68,9 @@ export default function SettleUp() {
       return;
     }
 
-    const fromBalance = balances[from] ?? 0;
-    if (fromBalance >= 0 && from === CURRENT_USER_ID) {
-      setError('You are not in debt — check the direction of payment');
+    const validationError = validateSettlement(balances, from, to, parsedAmount);
+    if (validationError) {
+      setError(validationError);
       return;
     }
 
@@ -203,6 +204,11 @@ export default function SettleUp() {
             <div className="form-group">
               <label className="form-label" htmlFor="amount">
                 Amount
+                {to && from && (
+                  <span className="form-hint">
+                    {' '}· max {formatMoney(getMaxSettlementAmount(balances, from, to), group.currency)}
+                  </span>
+                )}
               </label>
               <input
                 id="amount"
