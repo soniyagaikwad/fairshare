@@ -23,6 +23,7 @@ export default function EditGroup() {
   const [memberName, setMemberName] = useState('');
   const [simplifyDebts, setSimplifyDebts] = useState(group?.simplifyDebts ?? true);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!group) {
     return (
@@ -72,6 +73,8 @@ export default function EditGroup() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     dispatch({
       type: 'EDIT_GROUP',
       payload: { groupId, type, currency, members, simplifyDebts },
@@ -162,7 +165,9 @@ export default function EditGroup() {
             </div>
 
             {error && <p className="form-error">{error}</p>}
-            <button type="submit" className="btn btn--primary">Save Changes</button>
+            <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving…' : 'Save Changes'}
+            </button>
           </form>
         </div>
       </div>

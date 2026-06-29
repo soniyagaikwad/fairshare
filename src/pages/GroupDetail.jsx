@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   useApp,
   getGroup,
@@ -22,11 +22,13 @@ import ReceiptCard, {
   ReceiptSection,
 } from '../components/ReceiptCard';
 import { useUI } from '../context/UIContext';
+import { getActivityNavigation } from '../utils/activityNavigation';
 
 export default function GroupDetail() {
   const { groupId } = useParams();
   const { state, dispatch } = useApp();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { showToast, confirm } = useUI();
   const [tab, setTab] = useState('balances');
   const [search, setSearch] = useState('');
@@ -35,6 +37,27 @@ export default function GroupDetail() {
   const [isRenaming, setIsRenaming] = useState(false);
   const [renameValue, setRenameValue] = useState('');
   const [renameError, setRenameError] = useState('');
+  const [isRenameSubmitting, setIsRenameSubmitting] = useState(false);
+
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    const expenseParam = searchParams.get('expense');
+    if (!tabParam && !expenseParam) return;
+
+    const currentGroup = state.groups.find((g) => g.id === groupId);
+    const validTabs = currentGroup?.archived
+      ? ['balances', 'expenses', 'activity']
+      : ['balances', 'expenses', 'recurring', 'activity'];
+
+    if (tabParam && validTabs.includes(tabParam)) {
+      setTab(tabParam);
+    }
+    if (expenseParam) {
+      setTab('expenses');
+      setExpandedExpense(expenseParam);
+    }
+    setSearchParams({}, { replace: true });
+  }, [groupId, searchParams, setSearchParams, state.groups]);
 
   const group = getGroup(state, groupId);
   if (!group) {
@@ -42,7 +65,7 @@ export default function GroupDetail() {
       <div className="empty-state">
         <p>Group not found.</p>
         <Link to="/groups" className="btn btn--primary">
-          Go Home
+          Go to Groups
         </Link>
       </div>
     );
@@ -111,6 +134,7 @@ export default function GroupDetail() {
 
   function handleRename(e) {
     e.preventDefault();
+    if (isRenameSubmitting) return;
     const trimmed = renameValue.trim();
     if (!trimmed) {
       setRenameError('Group name is required');
@@ -120,12 +144,21 @@ export default function GroupDetail() {
       cancelRename();
       return;
     }
+    setIsRenameSubmitting(true);
     dispatch({
       type: 'RENAME_GROUP',
       payload: { groupId, name: trimmed },
     });
     showToast('Group renamed.');
     cancelRename();
+    setIsRenameSubmitting(false);
+  }
+
+  function handleActivityClick(activity) {
+    const nav = getActivityNavigation(activity, state);
+    if (!nav) return;
+    setTab(nav.tab);
+    setExpandedExpense(nav.expenseId ?? null);
   }
 
   const myBalance = balances[CURRENT_USER_ID] ?? 0;
@@ -227,8 +260,12 @@ export default function GroupDetail() {
             />
             {renameError && <p className="form-error">{renameError}</p>}
             <div className="rename-form__actions btn-row">
-              <button type="submit" className="btn btn--primary btn--small">
-                Save
+              <button
+                type="submit"
+                className="btn btn--primary btn--small"
+                disabled={isRenameSubmitting}
+              >
+                {isRenameSubmitting ? 'Saving…' : 'Save'}
               </button>
               <button
                 type="button"
@@ -582,14 +619,32 @@ export default function GroupDetail() {
                 <p className="empty-state__text">No activity yet.</p>
               </div>
             ) : (
-              activities.map((activity) => (
-                <div key={activity.id} className="activity-item">
-                  <div>{activity.message}</div>
-                  <div className="activity-item__time">
-                    {formatDateTime(activity.timestamp)}
+              activities.map((activity) => {
+                const nav = getActivityNavigation(activity, state);
+                const content = (
+                  <>
+                    <span className="activity-item__message">{activity.message}</span>
+                    <div className="activity-item__time">
+                      {formatDateTime(activity.timestamp)}
+                    </div>
+                  </>
+                );
+
+                return nav ? (
+                  <button
+                    key={activity.id}
+                    type="button"
+                    className="activity-item activity-item--link"
+                    onClick={() => handleActivityClick(activity)}
+                  >
+                    {content}
+                  </button>
+                ) : (
+                  <div key={activity.id} className="activity-item">
+                    {content}
                   </div>
-                </div>
-              ))
+                );
+              })
             )}
           </>
         )}

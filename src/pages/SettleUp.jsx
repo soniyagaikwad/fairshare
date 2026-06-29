@@ -20,6 +20,7 @@ export default function SettleUp() {
   const [method, setMethod] = useState('Venmo');
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!group) {
     return (
@@ -54,6 +55,7 @@ export default function SettleUp() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     setError('');
 
     const parsedAmount = parseFloat(amount);
@@ -76,6 +78,7 @@ export default function SettleUp() {
       return;
     }
 
+    setIsSubmitting(true);
     dispatch({
       type: 'ADD_SETTLEMENT',
       payload: {
@@ -258,8 +261,8 @@ export default function SettleUp() {
 
             {error && <p className="form-error">{error}</p>}
 
-            <button type="submit" className="btn btn--primary">
-              Record Payment
+            <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Recording…' : 'Record Payment'}
             </button>
           </form>
         </div>

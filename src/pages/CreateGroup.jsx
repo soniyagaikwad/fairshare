@@ -21,6 +21,7 @@ export default function CreateGroup() {
   const [memberName, setMemberName] = useState('');
   const [simplifyDebts, setSimplifyDebts] = useState(true);
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function addMember() {
     const trimmed = memberName.trim();
@@ -40,6 +41,7 @@ export default function CreateGroup() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     if (!name.trim()) {
       setError('Group name is required');
       return;
@@ -50,6 +52,7 @@ export default function CreateGroup() {
       ...members,
     ];
 
+    setIsSubmitting(true);
     dispatch({
       type: 'CREATE_GROUP',
       payload: {
@@ -182,8 +185,8 @@ export default function CreateGroup() {
 
             {error && <p className="form-error">{error}</p>}
 
-            <button type="submit" className="btn btn--primary">
-              Create Group
+            <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Creating…' : 'Create Group'}
             </button>
           </form>
         </div>

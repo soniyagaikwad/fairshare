@@ -12,6 +12,7 @@ import ReceiptCard, {
   ReceiptSection,
 } from '../components/ReceiptCard';
 import TestingPanel from '../components/TestingPanel';
+import { buildGroupActivityPath } from '../utils/activityNavigation';
 
 export default function Home() {
   const { state } = useApp();
@@ -147,7 +148,7 @@ export default function Home() {
                     {group && (
                       <span className="activity-item__group">{group.name}</span>
                     )}
-                    {activity.message}
+                    <span className="activity-item__message">{activity.message}</span>
                   </div>
                   <div className="activity-item__time">
                     {formatDateTime(activity.timestamp)}
@@ -158,7 +159,7 @@ export default function Home() {
               return group ? (
                 <Link
                   key={activity.id}
-                  to={`/groups/${group.id}`}
+                  to={buildGroupActivityPath(group.id, activity, state)}
                   className="activity-item activity-item--link"
                 >
                   {content}

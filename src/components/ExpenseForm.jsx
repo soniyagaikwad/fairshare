@@ -54,6 +54,7 @@ export default function ExpenseForm({ group, groupId, expense = null }) {
   const [tax, setTax] = useState(expense?.splitData?.tax?.toString() ?? '');
   const [tip, setTip] = useState(expense?.splitData?.tip?.toString() ?? '');
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function toggleParticipant(memberId) {
     setParticipants(
@@ -89,6 +90,7 @@ export default function ExpenseForm({ group, groupId, expense = null }) {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     setError('');
 
     const parsedAmount = parseFloat(amount);
@@ -133,6 +135,7 @@ export default function ExpenseForm({ group, groupId, expense = null }) {
       notes,
     };
 
+    setIsSubmitting(true);
     if (isEdit) {
       dispatch({ type: 'EDIT_EXPENSE', payload: { expenseId: expense.id, ...payload } });
       showToast('Expense updated.');
@@ -415,8 +418,8 @@ export default function ExpenseForm({ group, groupId, expense = null }) {
 
       {error && <p className="form-error">{error}</p>}
 
-      <button type="submit" className="btn btn--primary">
-        {isEdit ? 'Save Changes' : 'Save Expense'}
+      <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+        {isSubmitting ? 'Saving…' : isEdit ? 'Save Changes' : 'Save Expense'}
       </button>
     </form>
   );

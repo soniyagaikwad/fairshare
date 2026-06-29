@@ -24,12 +24,14 @@ export default function RecurringForm({ group, groupId, recurring = null }) {
     recurring?.startDate ?? new Date().toISOString().split('T')[0]
   );
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const participants =
     recurring?.participants ?? group.members.map((m) => ({ id: m.id, included: true }));
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     setError('');
     const parsedAmount = parseFloat(amount);
     if (!description.trim()) {
@@ -61,6 +63,7 @@ export default function RecurringForm({ group, groupId, recurring = null }) {
       startDate,
     };
 
+    setIsSubmitting(true);
     if (isEdit) {
       dispatch({
         type: 'EDIT_RECURRING_EXPENSE',
@@ -168,8 +171,8 @@ export default function RecurringForm({ group, groupId, recurring = null }) {
         />
       </div>
       {error && <p className="form-error">{error}</p>}
-      <button type="submit" className="btn btn--primary">
-        {isEdit ? 'Save Changes' : 'Create Recurring'}
+      <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+        {isSubmitting ? 'Saving…' : isEdit ? 'Save Changes' : 'Create Recurring'}
       </button>
     </form>
   );

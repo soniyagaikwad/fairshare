@@ -25,6 +25,7 @@ export default function Profile() {
     comments: user.notifications?.comments ?? true,
   });
   const [error, setError] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   function handlePhotoChange(e) {
     const file = e.target.files?.[0];
@@ -51,6 +52,7 @@ export default function Profile() {
 
   function handleSubmit(e) {
     e.preventDefault();
+    if (isSubmitting) return;
     setError('');
     if (!name.trim()) {
       setError('Name is required');
@@ -61,6 +63,7 @@ export default function Profile() {
       return;
     }
 
+    setIsSubmitting(true);
     dispatch({
       type: 'UPDATE_USER',
       payload: {
@@ -72,6 +75,7 @@ export default function Profile() {
       },
     });
     showToast('Profile saved.');
+    setIsSubmitting(false);
   }
 
   function removePhoto() {
@@ -186,7 +190,9 @@ export default function Profile() {
 
             {error && <p className="form-error">{error}</p>}
 
-            <button type="submit" className="btn btn--primary">Save Profile</button>
+            <button type="submit" className="btn btn--primary" disabled={isSubmitting}>
+              {isSubmitting ? 'Saving…' : 'Save Profile'}
+            </button>
           </form>
         </div>
       </div>
