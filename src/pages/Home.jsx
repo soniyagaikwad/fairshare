@@ -141,29 +141,31 @@ export default function Home() {
           ) : (
             recentActivity.map((activity) => {
               const group = state.groups.find((g) => g.id === activity.groupId);
-              return (
-                <div key={activity.id} className="activity-item">
+              const content = (
+                <>
                   <div>
                     {group && (
-                      <span
-                        style={{
-                          fontSize: '0.65rem',
-                          fontFamily: 'var(--font-mono)',
-                          color: 'var(--ink-faint)',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.1em',
-                          display: 'block',
-                          marginBottom: '0.15rem',
-                        }}
-                      >
-                        {group.name}
-                      </span>
+                      <span className="activity-item__group">{group.name}</span>
                     )}
                     {activity.message}
                   </div>
                   <div className="activity-item__time">
                     {formatDateTime(activity.timestamp)}
                   </div>
+                </>
+              );
+
+              return group ? (
+                <Link
+                  key={activity.id}
+                  to={`/groups/${group.id}`}
+                  className="activity-item activity-item--link"
+                >
+                  {content}
+                </Link>
+              ) : (
+                <div key={activity.id} className="activity-item">
+                  {content}
                 </div>
               );
             })

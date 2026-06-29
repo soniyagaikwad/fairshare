@@ -3,9 +3,11 @@ import { useApp, getMemberName } from '../context/AppContext';
 import { buildReports, exportExpensesCsv, downloadCsv } from '../utils/reports';
 import { formatMoney } from '../utils/constants';
 import ReceiptCard, { ReceiptRow, ReceiptSection } from '../components/ReceiptCard';
+import { useUI } from '../context/UIContext';
 
 export default function Reports() {
   const { state } = useApp();
+  const { showToast } = useUI();
   const [groupFilter, setGroupFilter] = useState('all');
   const activeGroups = state.groups.filter((g) => !g.archived);
 
@@ -24,6 +26,7 @@ export default function Reports() {
         ? 'fairshare-all-expenses.csv'
         : `fairshare-${activeGroups.find((g) => g.id === groupFilter)?.name ?? 'group'}.csv`;
     downloadCsv(name.replace(/\s+/g, '-').toLowerCase(), csv);
+    showToast('CSV exported.');
   }
 
   return (

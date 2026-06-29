@@ -363,24 +363,16 @@ export default function GroupDetail() {
                     const myShare = expense.splits?.[CURRENT_USER_ID] ?? 0;
 
                     return (
-                      <div key={expense.id}>
+                      <div key={expense.id} className="expense-item">
                         <div
-                          className="receipt__row"
-                          style={{ cursor: 'pointer' }}
+                          className="receipt__row expense-item__row"
                           onClick={() =>
                             setExpandedExpense(isExpanded ? null : expense.id)
                           }
                         >
                           <span>
                             {expense.description}
-                            <span
-                              style={{
-                                display: 'block',
-                                fontSize: '0.65rem',
-                                color: 'var(--ink-faint)',
-                                fontFamily: 'var(--font-mono)',
-                              }}
-                            >
+                            <span className="expense-item__meta">
                               {formatDate(expense.date)} · paid by{' '}
                               {getMemberName(group, expense.paidBy, state.user)}
                               {expense.recurringId && ' · recurring'}
@@ -393,13 +385,20 @@ export default function GroupDetail() {
                           </span>
                         </div>
 
+                        {!group.archived && !isExpanded && (
+                          <div className="expense-item__quick-actions">
+                            <Link
+                              to={`/groups/${groupId}/expenses/${expense.id}/edit`}
+                              className="btn btn--ghost btn--small"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              Edit
+                            </Link>
+                          </div>
+                        )}
+
                         {isExpanded && (
-                          <div
-                            style={{
-                              padding: '0.75rem 0',
-                              borderBottom: '1px dotted var(--line)',
-                            }}
-                          >
+                          <div className="expense-item__details">
                             <ReceiptRow
                               label="Category"
                               amount={expense.category}

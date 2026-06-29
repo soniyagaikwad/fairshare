@@ -92,7 +92,11 @@ export default function Profile() {
             <div className="profile-avatar-section">
               <div className="profile-avatar">
                 {profilePicture ? (
-                  <img src={profilePicture} alt="" className="profile-avatar__img" />
+                  <img
+                    src={profilePicture}
+                    alt={`${name.trim() || 'Your'} profile photo`}
+                    className="profile-avatar__img"
+                  />
                 ) : (
                   <span className="profile-avatar__initial">
                     {name.trim().charAt(0).toUpperCase() || '?'}
